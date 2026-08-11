@@ -1,0 +1,15 @@
+{
+  "name": "MY CARS",
+  "short_name": "MY CARS",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1769aa",
+  "icons": [
+    {
+      "src": "./IMG-20260811-WA0052.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
