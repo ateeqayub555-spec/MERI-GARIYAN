@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1769aa"><link rel="manifest" href="manifest.json">
+<title>میری گاڑیاں</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f6f9;font-family:Arial,sans-serif;color:#18232d}
+header{background:#1769aa;color:#fff;padding:18px 16px;border-radius:0 0 20px 20px}
+h1{margin:0;font-size:24px}.muted{opacity:.85;font-size:13px;margin-top:5px}
+main{max-width:720px;margin:auto;padding:12px 12px 90px}.card{background:#fff;border-radius:16px;padding:15px;margin:10px 0;box-shadow:0 3px 12px #0001}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;padding:8px;gap:7px;box-shadow:0 -2px 12px #0002;z-index:5}
+nav button{flex:1;border:0;background:#edf1f5;border-radius:12px;padding:11px 5px;font-weight:bold}nav .on{background:#1769aa;color:#fff}
+input,select,textarea{width:100%;padding:11px;border:1px solid #ccd5dd;border-radius:10px;font-size:15px;margin-top:4px}
+label{font-size:13px;font-weight:bold;display:block;margin-top:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.car{border-right:5px solid #1769aa}.stat{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
+.primary{width:100%;border:0;background:#1769aa;color:#fff;padding:12px;border-radius:10px;font-weight:bold;margin-top:12px}.danger{background:#c62828}
+.item{background:#f8fafc;border-radius:10px;padding:11px;margin:8px 0}.small{font-size:12px;color:#68737d}
+</style></head>
+<body>
+<header><h1>🚗 میری گاڑیاں</h1><div class="muted">مینٹیننس اور خرچ کا آسان ریکارڈ</div></header>
+<main id="app"></main>
+<nav><button id="cars" class="on" onclick="page('cars')">🚗<br>گاڑیاں</button><button id="log" onclick="page('log')">📋<br>ریکارڈ</button><button id="add" onclick="page('add')">➕<br>نیا</button></nav>
+<script>
+const defaults=[["Toyota Noah","2016"],["Tanto","2020"],["Honda Civic","2022"],["Mira","2020"]];
+let data=JSON.parse(localStorage.getItem("carApp")||"null")||{cars:defaults.map(x=>({name:x[0],year:x[1],km:""})),logs:[]};
+function save(){localStorage.setItem("carApp",JSON.stringify(data))}
+function page(p){
+document.querySelectorAll("nav button").forEach(b=>b.classList.remove("on"));document.getElementById(p).classList.add("on");
+let a=document.getElementById("app");
+if(p==="cars"){a.innerHTML=`<div class=card><h2>گاڑیوں کی فہرست</h2>${data.cars.map((c,i)=>`<div class="card car"><h3>${c.name} ${c.year}</h3><label>موجودہ میٹر (KM)</label><input type=number value="${c.km}" onchange="data.cars[${i}].km=this.value;save()"><div class=stat><span>کل ریکارڈ</span><b>${data.logs.filter(x=>x.car===c.name).length}</b></div><div class=stat><span>کل خرچہ</span><b>${data.logs.filter(x=>x.car===c.name).reduce((s,x)=>s+(+x.cost||0),0).toLocaleString()} روپے</b></div></div>`).join("")}</div>`}
+if(p==="log"){a.innerHTML=`<div class=card><h2>مینٹیننس ریکارڈ</h2>${data.logs.length?data.logs.slice().reverse().map((x,ri)=>`<div class=item><b>${x.car}</b><br>${x.work}<div class=small>${x.date} | ${x.km||"-"} KM | ${(+x.cost||0).toLocaleString()} روپے</div>${x.next?`<div class=small>اگلی سروس: ${x.next} KM</div>`:""}${x.note?`<div class=small>${x.note}</div>`:""}<button class="primary danger" onclick="removeLog(${data.logs.length-1-ri})">حذف</button></div>`).join(""):"<p>ابھی کوئی ریکارڈ نہیں۔</p>"}</div>`}
+if(p==="add"){a.innerHTML=`<div class=card><h2>نیا ریکارڈ</h2><label>گاڑی</label><select id=c>${data.cars.map(x=>`<option>${x.name}</option>`).join("")}</select><div class=grid><div><label>تاریخ</label><input id=d type=date value="${new Date().toISOString().slice(0,10)}"></div><div><label>KM</label><input id=k type=number></div></div><label>کام</label><input id=w placeholder="مثلاً بریک پیڈ، گیئر آئل"><div class=grid><div><label>خرچہ</label><input id=cost type=number></div><div><label>اگلی سروس KM</label><input id=n type=number></div></div><label>نوٹس</label><textarea id=note placeholder="برانڈ یا دوسری تفصیل"></textarea><button class=primary onclick=addLog()>محفوظ کریں</button></div>`}
+}
+function addLog(){if(!w.value.trim()){alert("کام ضرور لکھیں");return}data.logs.push({car:c.value,date:d.value,km:k.value,work:w.value,cost:cost.value,next:n.value,note:note.value});save();alert("ریکارڈ محفوظ ہوگیا");page("log")}
+function removeLog(i){if(confirm("ریکارڈ حذف کریں؟")){data.logs.splice(i,1);save();page("log")}}
+if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+page("cars");
+</script></body></html>
