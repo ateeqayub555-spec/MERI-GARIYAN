@@ -24,7 +24,7 @@ label{font-size:13px;font-weight:bold;display:block;margin-top:10px}.grid{displa
 <body>
 <header><h1<h1><img src="IMG-20260811-WA0052.jpg" style="width:100%;height:auto;object-fit:contain;display:block;margin:auto;vertical-align:middle"> میری گاڑیاں</h1>><div class="muted">مینٹیننس اور خرچ کا آسان ریکارڈ</div></header>
 <main id="app"></main>
-<nav><button id="cars" class="on" onclick="page('cars')">🚗<br>گاڑیاں</button><button id="log" onclick="page('log')">📋<br>ریکارڈ</button><button id="add" onclick="page('add')">➕<br>نیا</button></nav>
+<nav><button id="cars" class="on" onclick="page('cars')">🚗<br>MY CARS</button><button id="log" onclick="page('log')">📋<br>ریکارڈ</button><button id="add" onclick="page('add')">➕<br>نیا</button></nav>
 <script>
 const defaults=[["Toyota Noah","2016"],["Tanto","2020"],["Honda Civic","2022"],["Mira","2020"]];
 let data=JSON.parse(localStorage.getItem("carApp")||"null")||{cars:defaults.map(x=>({name:x[0],year:x[1],km:""})),logs:[]};
